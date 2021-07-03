@@ -1,5 +1,4 @@
 import subprocess
-import time
 class INSTALLER() :
 
   def __init__(self,service):
@@ -8,7 +7,7 @@ class INSTALLER() :
       self.CALLER()
 
   def FTP(self) :
-    self.packages_list= ["./packages/vsftpd-3.0.4-1-omv4050.x86_64.rpm"]
+    self.packages_list= ["./packages/vsftpd-3.0.3-44.fc35.x86_64.rpm"]
 
   def install(self):
     for package in self.packages_list :

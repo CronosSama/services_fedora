@@ -16,7 +16,6 @@ class BASED_APP() :
 
   def board(self):
     while self.mainSTATE != True :
-      self.clear()
       TOF = int(input(self.mainMSG))
       if TOF == 0 :
         self.clear()
@@ -27,6 +26,7 @@ class BASED_APP() :
         self.configure()
 
       if TOF == 5 :
+        self.clear()
         print("bye bye")
         break
 
