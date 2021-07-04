@@ -1,9 +1,36 @@
-subnet 11 netmask 22 {
-range 33 ;
-option domain-name-servers 44 ;
-option domain-name 55 ;
-option routers 66 ;
-option broadcast-address 77 ;
-default-lease-time 88 ;
-max-lease-time 99 ;
+subnet 99999999999 netmask 888888888 {
+range 7777777777 ;
+option domain-name-servers 65 ;
+option domain-name 5555555555 ;
+option routers 44444444444 ;
+option broadcast-address 33333333333 ;
+default-lease-time 22222222222 ;
+max-lease-time 111111111 ;
+} 
+
+
+option routers 455555 ;
+option broadcast-address 666666666 ;
+default-lease-time 777777777 ;
+max-lease-time 88888888888 ;
+} 
+subnet xxxxxxxxxx netmask xxxxxxxxxxxx {
+range xxxxxxxxxxxx ;
+option domain-name-servers xxxxxxxxxx ;
+option domain-name xxxxxxxxxx ;
+option routers xxxxxxxxxx ;
+option broadcast-address xxxxxxxxxxx ;
+default-lease-time xxxxxxxxxxx ;
+max-lease-time xxxxxxxxxxx ;
+} 
+host  { client1 ;
+hardware ethernet 00::ccc:55 ;
+fixed-address ; 192.168.1.0 ;
+} 
+
+
+
+host LOOL{
+hardware ethernet XD:DX:HEXA:DE ;
+fixed-address 192.168.0.15 ;
 } 

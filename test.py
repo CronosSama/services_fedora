@@ -1,13 +1,15 @@
+import re
 
-
-with open("./Config/dhcp/add.txt","r") as file :
+with open("./Config/dhcp/try.txt","r") as file :
   origin = file.readlines()
-newlist = []
-print(len(origin)-1)
-for n,i in enumerate(origin) :
-    newlist.append(i.strip() + " " +str(n))
-    print(n)
-  
 
-print(origin)
-print(newlist)
+the_Ligne_number = 0
+for n,i in enumerate(origin) :
+    founded = re.search("client2",i)
+    if str(founded) != "None" :
+      print(founded)
+      the_Ligne_number = n
+      break
+
+print(the_Ligne_number)
+
