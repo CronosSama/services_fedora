@@ -1,0 +1,9 @@
+subnet 11 netmask 22 {
+range 33 ;
+option domain-name-servers 44 ;
+option domain-name 55 ;
+option routers 66 ;
+option broadcast-address 77 ;
+default-lease-time 88 ;
+max-lease-time 99 ;
+} 

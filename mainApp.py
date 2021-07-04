@@ -10,7 +10,7 @@ class BASED_APP() :
   def __init__(self):
       self.mainMSG = "[0]INSTALL\t[1]CONFIGURE\t[2]CREATE_USERS\n[3]CHECK_STATUS\t[4]RESET\t[5]EXIT \n"
       self.installMSG = "[0]DHCP\t[1]DNS\t[2]HTTP\t[3]SSH\n[4]SFTP\t[5]SAMBA\t[6]EXIT\n"
-
+      self.DHCP = "[0]ADD_NETWORK\t[1]ADD_FIXED\t[2]MODIFY_NETWORK\n[3]MODIFY_FIXED\t[4]DELETE_NETWORK\t[5]DELETE_FIXED\n[6]EXIT\n"
       self.mainSTATE = False
       self.board()
 
@@ -37,7 +37,7 @@ class BASED_APP() :
     while self.mainSTATE != True :
       TOF = int(input(self.installMSG))
       if TOF == 4 :
-        INSTALLER("FTP")
+        INSTALLER("vsftpd")
         break
       if TOF == 6 :
         self.clear()
@@ -48,9 +48,18 @@ class BASED_APP() :
     while self.mainSTATE != True :
       TOF = int(input(self.installMSG))
       if TOF == 4 :
-        CONFIGURER("FTP")
+        CONFIGURER("vsftpd")
         print("done")
         break
+      if TOF == 0 :
+        while self.mainSTATE !=True :
+          TOF = int(input(self.DHCP))
+          if TOF == 0 :
+            CONFIGURER("dhcpd","ADD_NETWORK")
+          if TOF == 6 :
+            self.clear()
+            break
+        pass
       if TOF == 6 :
         self.clear()
         break  

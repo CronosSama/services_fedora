@@ -1,0 +1,9 @@
+subnet  netmask  {
+  range 
+  option domain-name-servers 
+  option domain-name 
+  option routers 
+  option broadcast-address 
+  default-lease-time 
+  max-lease-time 
+}
