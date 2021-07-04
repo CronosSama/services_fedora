@@ -39,6 +39,9 @@ class BASED_APP() :
       if TOF == 4 :
         INSTALLER("vsftpd")
         break
+      if TOF == 0 :
+        INSTALLER("dhcpd")
+        break
       if TOF == 6 :
         self.clear()
         break
@@ -65,6 +68,9 @@ class BASED_APP() :
             CONFIGURER("dhcpd","REMOVE_FIXED")
           if TOF == 2 :
             CONFIGURER("dhcpd","REMOVE_NETWORK")
+          if TOF == 4 :
+              self.clear()
+              break
         pass
       if TOF == 4 :
         self.clear()

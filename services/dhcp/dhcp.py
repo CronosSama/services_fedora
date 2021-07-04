@@ -44,7 +44,7 @@ class DHCP():
   def ADDER(self) :
 
       conf = []
-
+      
       #just tanjm3 les valeur li hanzid
       for inp in self.inputs :
         new = input(f"the value of {inp} : ")

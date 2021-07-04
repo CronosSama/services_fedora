@@ -33,6 +33,7 @@ class CONFIGURER() :
 
   def DHCPD(self) :
     DHCP(self.option)
+    print("RESTART will start now ...")
     self.RESTARTER()  
  
     
