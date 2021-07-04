@@ -17,7 +17,7 @@ class INSTALLER() :
 
   def install(self):
     for package in self.packages_list :
-      self.cmd(f"sudo dnf localinstall {package}")
+      self.cmd(f"dnf localinstall {package}")
 
   def CALLER(self):
     if self.service == "vsftpd" :

@@ -24,7 +24,8 @@ class BASED_APP() :
       if TOF == 1 :
         self.clear()
         self.configure()
-
+      if TOF == 2 :
+        pass
       if TOF == 5 :
         self.clear()
         print("bye bye")
