@@ -10,24 +10,14 @@ class USSER():
       self.usernames = []
       self.nmbrUsersInGroup = {}
       self.CALLER()
+
+      
   def create_groups(self):
     print("we are in CREATE_GROUPE stage !!")
     for group in self.groupsName :
       self.cmd(f"groupadd {group}")
       print(f"group {group} has been created successfully !!!")
-      pass
-
-  # def create_users(self):
-
-  #   with open("./passwd.txt","r+") as file :
-  #     for u in range(self.userNumber) : 
-  #       password = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
-  #       username = f"user{u}"
-  #       full_user = f"{username}:{password}"
-  #       # self.cmd(f"useradd {username} -G {group}")
-  #       # self.cmd(f"echo {username}:{password} | chpasswd ")
-  #       file.write(full_user+"\n")
-
+      
 
 
   def informations(self) :
@@ -43,11 +33,10 @@ class USSER():
 
 
   def addUsersToGroup(self) :
-    # data = []
     print("we are in the ADD_USER stage !!! ")
     N = int(input("how many letter you want to be in the password ? : "))
     with open("./passwd.txt","r+") as file :
-      # data = file.readlines()
+
       i = 0
       for group,nmbr in self.nmbrUsersInGroup.items() :
         for _ in range(nmbr) :
@@ -58,22 +47,12 @@ class USSER():
             self.cmd(f"echo {username}:{password} | chpasswd ")
             file.write(full_user+"\n")
             print(f"user {username} has been added SUCCESSFULLY !!!")
-          # data[i] = data[i].strip() + f":{group}" + "\n"
-          # username = data[i].split(":")[0]
-          # self.cmd(f"gpasswd -a {username} {group}")
             i += 1
-
-    # with open("./passwd.txt","w") as file :
-    #   file.write("")
-    #   file.writelines(data)
-    
 
   def CALLER(self) :
     self.informations()
     self.create_groups()
-    # self.create_users()
     self.addUsersToGroup()
-    pass
 
   def cmd(self,command):
     subprocess.run(command,shell=True)
