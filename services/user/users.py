@@ -41,21 +41,20 @@ class USSER():
     print(self.All_Group_Info)
 
 
-  def addUsersToGroup(self,One_Group_INFO,c) :
+  def addUsersToGroup(self,One_Group_INFO) :
     group = One_Group_INFO["name"]
     
     print(f"we are in the ADD_USER stage for group : { group } !!! ")
 
-    self.cmd(f"touch ./groups/{group}.txt")
-    self.cmd(f"groupadd {group}")
+    self.cmd(f"touch ./groups/{group}.txt ; groupadd {group}")
     with open(f"./groups/{group}.txt","r+") as file :
       i = One_Group_INFO["starter"]
-      # for One_Group_INFO in self.All_Group_Info :
       for _ in range(One_Group_INFO["unum"]) :
           password = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(self.passwordLength))
           username = f"user{i}"
           full_user = f"{username}:{password}:{group}"
-          self.cmd(f"sudo useradd -G {group} {username} ;  chpasswd {username}:{password} ")
+          self.cmd(f"useradd -G {group} {username}")
+          self.cmd(f"echo {username}:{password} | chpasswd ")
           file.write(full_user+"\n")
           print(f"user {username} has been added SUCCESSFULLY !!!")
           i += 1
@@ -65,8 +64,8 @@ class USSER():
     self.cmd(f"mkdir ./groups") 
     pool = Pool(processes=len(self.All_Group_Info))
     start = time.time()
-    for c,One_Group_INFO in enumerate(self.All_Group_Info) : 
-      process = pool.apply_async(self.addUsersToGroup,[One_Group_INFO,c])
+    for One_Group_INFO in self.All_Group_Info : 
+      process = pool.apply_async(self.addUsersToGroup,[One_Group_INFO])
       print("wait i'am finished already ? wtf ")
     pool.close()
     pool.join() 
