@@ -1,7 +1,8 @@
 import random
 import string
 import subprocess
-from multiprocessing import Pool
+
+# from multiprocessing import Pool
 import time
 class USSER():
   def __init__(self) :
@@ -13,14 +14,6 @@ class USSER():
       self.All_Group_Info = []
       self.arrayOfNumber = []
       self.CALLER()
-
-
-  def create_groups(self):
-    print("we are in CREATE_GROUPE stage !!")
-    for group in self.groupsName :
-      
-      print(f"group {group} has been created successfully !!!")
-      
 
 
   def informations(self) :
@@ -53,8 +46,12 @@ class USSER():
           password = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(self.passwordLength))
           username = f"user{i}"
           full_user = f"{username}:{password}:{group}"
-          self.cmd(f"useradd -G {group} {username}")
-          self.cmd(f"echo {username}:{password} | chpasswd ")
+          self.cmd(f"useradd -m -g {group} {username}")
+          #self.cmd(f"echo {username}:{password} | chpasswd ")
+          #option e for echo can interept \n not write it
+          self.cmd(f'echo -e "{password}\n{password}" | passwd {username} ')
+          self.cmd(f'echo -e "{password}\n{password}" | smbpasswd -as {username} ')
+          # self.cmd(f"./ip.sh {username} {password} {group}")
           file.write(full_user+"\n")
           print(f"user {username} has been added SUCCESSFULLY !!!")
           i += 1
@@ -62,13 +59,14 @@ class USSER():
   def CALLER(self) :
     self.informations()
     self.cmd(f"mkdir ./groups") 
-    pool = Pool(processes=len(self.All_Group_Info))
+    # pool = Pool(processes=len(self.All_Group_Info))
     start = time.time()
     for One_Group_INFO in self.All_Group_Info : 
-      process = pool.apply_async(self.addUsersToGroup,[One_Group_INFO])
+      # process = pool.apply_async(self.addUsersToGroup,[One_Group_INFO])
+      self.addUsersToGroup(One_Group_INFO)
       print("wait i'am finished already ? wtf ")
-    pool.close()
-    pool.join() 
+    # pool.close()
+    # pool.join() 
       
     end = time.time()
     print(f"it tooks {end - start} to whole things done .... ")
