@@ -1,0 +1,15 @@
+$TTL 3H
+@	IN SOA	 srv1.sen.netmobo.lab. root.netmobo.lab. (
+					0	; serial
+					1D	; refresh
+					1H	; retry
+					1W	; expire
+					3H )	; minimum
+
+
+		IN	NS	srv1.sen.netmobo.lab.
+	
+
+15		IN	PTR	srv1.sen.netmobo.lab
+10		IN	PTR	client1.sen.netmobo.lab
+

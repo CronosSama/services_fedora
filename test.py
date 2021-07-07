@@ -55,39 +55,49 @@ from colorama import Fore,Back,Style
 # #   print(origin[i].split(":")[0])
 # # print(len(origin))
 # lol = []
-# with open("./Config/dns/named_copy.conf","r") as file :
-#   lol = file.readlines()
+with open("./Config/dns/named_copy.conf","r") as file :
+  lol = file.readlines()
 
 # find_start = 0
 # find_end   = 0
 
 
-# def test(file,first,end=False) :
-#   #daba plan wmafih anaho ana tan9lb 3la wa7d l3iba tatbda bchi l3iba "first"
-#   # had l3iba tatkml bchi l3iba okhra tanprovidiha f "end", w brit index fin taykml 7ta howa 
-#   # tandiro return wa7d array fih index dyal lbdya wdyal nihaya
-#   # 
+def test(file,first,end=False) :
+  #daba plan wmafih anaho ana tan9lb 3la wa7d l3iba tatbda bchi l3iba "first"
+  # had l3iba tatkml bchi l3iba okhra tanprovidiha f "end", w brit index fin taykml 7ta howa 
+  # tandiro return wa7d array fih index dyal lbdya wdyal nihaya
+  # 
  
-#   array = []
-#   for index,item in enumerate(file) :
+  array = []
+  for index,item in enumerate(file) :
 
-#     search = re.search(first,item)
-#     if search != None : 
-#       array.append(index)
-#       #hadi drtha bach mnin yl9a hadak first wtan7to index dyalo
-#       #nnbdlo valeur dyal first b valeur dyal end bach y9lb 3liha
-#       #blast mandiro wa7d for loop okhra wla variable okhra
-#       first = end
-#       #hadi mnin yl9a dakchi li khasni fi 7alat 3tito first w end safi critiria lwla hatkhdm w ytra loop break
-#       #tanya hiya fi7alat tansearchi her 3la index dyal chi kalma wla jomla safi wmam7tajch end
-#     if len(array) == 2 or (len(array) == 1 and end == False) :
-#       break
-#   return array
+    search = re.search(first,item)
+    if search != None : 
+      array.append(index)
+      #hadi drtha bach mnin yl9a hadak first wtan7to index dyalo
+      #nnbdlo valeur dyal first b valeur dyal end bach y9lb 3liha
+      #blast mandiro wa7d for loop okhra wla variable okhra
+      first = end
+      #hadi mnin yl9a dakchi li khasni fi 7alat 3tito first w end safi critiria lwla hatkhdm w ytra loop break
+      #tanya hiya fi7alat tansearchi her 3la index dyal chi kalma wla jomla safi wmam7tajch end
+    if len(array) == 2 or (len(array) == 1 and end == False) :
+      break
+  return array
 
-# #print(test(lol,"acl","}"))
-# # inp_num = int(input("HOW MANY TIMES YOU WANT TO ADD ACL : "))
+# position = test(lol,"acl","}")
+# lol.insert(position[0]+1,"JAJAJA")
+
+# position = test(lol,"#DIRECT")
+# print(lol[position[0]])
+# print(lol[position[0]+1])
+# print(lol[position[0]+2])
+# print(lol[position[0]+3])
 
 
+named = "sen.netmobo.lab"
+named = named.split(".")
+print(".".join(named[::-1]))
+# print(lol)
 
 # result = test(lol,"listen-on port")
 # print(result)
@@ -100,7 +110,6 @@ from colorama import Fore,Back,Style
 
 
 
-print(f'{Back.GREEN +Fore.RED} some Green txt')
 
 
 

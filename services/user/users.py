@@ -39,19 +39,21 @@ class USSER():
     
     print(f"we are in the ADD_USER stage for group : { group } !!! ")
 
-    self.cmd(f"touch ./groups/{group}.txt ; groupadd {group}")
+    self.cmd(f"touch ./groups/{group}.txt")
+    self.cmd(f" groupadd {group}")
     with open(f"./groups/{group}.txt","r+") as file :
-      i = One_Group_INFO["starter"]
+      # i = One_Group_INFO["starter"]
+      i=1
       for _ in range(One_Group_INFO["unum"]) :
           password = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(self.passwordLength))
-          username = f"user{i}"
+          username = f"{group}-Poste{i}"
           full_user = f"{username}:{password}:{group}"
           self.cmd(f"useradd -m -g {group} {username}")
-          #self.cmd(f"echo {username}:{password} | chpasswd ")
-          #option e for echo can interept \n not write it
+          self.cmd(f"echo {username}:{password} | chpasswd ")
+          # option e for echo can interept \n not write it
           self.cmd(f'echo -e "{password}\n{password}" | passwd {username} ')
           self.cmd(f'echo -e "{password}\n{password}" | smbpasswd -as {username} ')
-          # self.cmd(f"./ip.sh {username} {password} {group}")
+          self.cmd(f"./ip.sh {username} {password} {group}")
           file.write(full_user+"\n")
           print(f"user {username} has been added SUCCESSFULLY !!!")
           i += 1
