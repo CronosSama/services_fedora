@@ -39,7 +39,7 @@ class SSH():
       AllowGroups = self.ssh_allowed_groups
 
     AllowGroups2 = ""
-    if re.search(",",self.sftp_allowed_groups) :
+    if re.search(",",self.sftp_allowed_groups) !=None :
         AllowGroups2 = self.sftp_allowed_groups.split(",")
         AllowGroups2 = " ".join(AllowGroups2)
     else :
@@ -47,13 +47,11 @@ class SSH():
 
 
     origin[120] = f"{origin[120].strip()} {AllowGroups} {AllowGroups2} \n"
-    
+    print(origin[120])
     #Allowed ssh groups
     origin[124] = f"{origin[124].strip()} {self.ssh_allowed_groups} \n"
     #Allowed sftp groups
     origin[127] = f"{origin[127].strip()} {self.sftp_allowed_groups} \n"
-
-    origin[120] = f"{origin[120].strip()} {self.ssh_allowed_groups} \n"
 
     with open(self.sshPATH,"w") as file :
       file.write("")
