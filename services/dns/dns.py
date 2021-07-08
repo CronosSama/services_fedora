@@ -65,24 +65,32 @@ class DNS():
         self.init_information(True)
         with open("Config/dns/named.conf","r") as file : 
           named = file.readlines()
-
+        #ADD ACE
         position = self.getPosition(named,"acl","}")
         named.insert(position[0]+1,f"{self.allowedNetworks[0]}/{self.prefix} ;\n")
+        #ADD SERVER IP
         position = self.getPosition(named,"listen-on port 53")
         named[position[0]] = named[position[0]].strip() + self.dns_server_ip.strip() + "; };\n"
+        ###ZONEFILES
+        ##DIRECT
         position = self.getPosition(named,"#DIRECT")
+        #zone with domain name
         named[position[0]+1] = f'zone "{self.domain_name}" IN '+" { \n"
+        #zone type
         named[position[0]+2] = named[position[0]+2].strip() + f" {self.NStype} ;\n"
+        #zone file name
         named[position[0]+3] = named[position[0]+3].strip() + f' "{self.domain_name}" ;\n'
         self.cmd(f"touch /var/named/{self.domain_name}")
 
-        #REVERSE
+        ##REVERSE
         position = self.getPosition(named,"#REVERSE")
-
+        #zone with reversed
         named[position[0]+1] = f'zone "{self.address_riversed}.in-addr.arpa" IN '+"{ \n"
+        #ZONE type
         named[position[0]+2] = named[position[0]+2].strip() + f" {self.NStype} ;\n"
         reversed_domain = self.domain_name.split(".")
         reversed_domain = ".".join(reversed_domain[::-1])
+        #ZONE FILE
         named[position[0]+3] = named[position[0]+3].strip() + f' "{reversed_domain}" ;\n'
         self.cmd(f"touch /var/named/{reversed_domain}")
         with open(self.named_PATH,"w") as file :
@@ -133,13 +141,13 @@ class DNS():
         interface = subprocess.run("ifconfig | head -1 | cut -d: -f1",shell=True,capture_output=True)
         interface = interface.stdout.decode().strip()
         # print(interface.stdout.decode().strip())
-        self.cmd(f"nmcli connection modify {interface} IPv4.address {self.dns_server_ip} ")
+        self.cmd(f"nmcli connection modify {interface} IPv4.address {self.dns_server_ip}/{self.prefix} ")
         self.cmd(f"nmcli connection modify {interface} IPv4.dns {self.dns_server_ip} ")
         self.cmd(f"nmcli connection modify {interface} IPv4.method manual ")
         arrayed_ip = self.dns_server_ip.split(".")
         arrayed_ip[-1] = "1"
         arrayed_ip = ".".join(arrayed_ip)
-        self.cmd(f"nmcli connection modify {interface} IPv4.gateway {arrayed_ip}/{self.prefix}")
+        self.cmd(f"nmcli connection modify {interface} IPv4.gateway {arrayed_ip}")
         self.cmd(f"nmcli connection down {interface} ")
         self.cmd(f"nmcli connection up {interface} ")
 

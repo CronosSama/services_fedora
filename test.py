@@ -1,5 +1,5 @@
-# import re
-from re import sub
+import re
+
 import subprocess
 # import colorama
 # from colorama import Fore,Back,Style
@@ -63,27 +63,27 @@ import subprocess
 # # find_end   = 0
 
 
-# def test(file,first,end=False) :
-#   #daba plan wmafih anaho ana tan9lb 3la wa7d l3iba tatbda bchi l3iba "first"
-#   # had l3iba tatkml bchi l3iba okhra tanprovidiha f "end", w brit index fin taykml 7ta howa 
-#   # tandiro return wa7d array fih index dyal lbdya wdyal nihaya
-#   # 
+def test(file,first,end=False) :
+  #daba plan wmafih anaho ana tan9lb 3la wa7d l3iba tatbda bchi l3iba "first"
+  # had l3iba tatkml bchi l3iba okhra tanprovidiha f "end", w brit index fin taykml 7ta howa 
+  # tandiro return wa7d array fih index dyal lbdya wdyal nihaya
+  # 
  
-#   array = []
-#   for index,item in enumerate(file) :
+  array = []
+  for index,item in enumerate(file) :
 
-#     search = re.search(first,item)
-#     if search != None : 
-#       array.append(index)
-#       #hadi drtha bach mnin yl9a hadak first wtan7to index dyalo
-#       #nnbdlo valeur dyal first b valeur dyal end bach y9lb 3liha
-#       #blast mandiro wa7d for loop okhra wla variable okhra
-#       first = end
-#       #hadi mnin yl9a dakchi li khasni fi 7alat 3tito first w end safi critiria lwla hatkhdm w ytra loop break
-#       #tanya hiya fi7alat tansearchi her 3la index dyal chi kalma wla jomla safi wmam7tajch end
-#     if len(array) == 2 or (len(array) == 1 and end == False) :
-#       break
-#   return array
+    search = re.search(first,item)
+    if search != None : 
+      array.append(index)
+      #hadi drtha bach mnin yl9a hadak first wtan7to index dyalo
+      #nnbdlo valeur dyal first b valeur dyal end bach y9lb 3liha
+      #blast mandiro wa7d for loop okhra wla variable okhra
+      first = end
+      #hadi mnin yl9a dakchi li khasni fi 7alat 3tito first w end safi critiria lwla hatkhdm w ytra loop break
+      #tanya hiya fi7alat tansearchi her 3la index dyal chi kalma wla jomla safi wmam7tajch end
+    if len(array) == 2 or (len(array) == 1 and end == False) :
+      break
+  return array
 
 # # position = test(lol,"acl","}")
 # # lol.insert(position[0]+1,"JAJAJA")
@@ -112,17 +112,24 @@ import subprocess
 
 
 
-interface = subprocess.run("ifconfig | head -1 | cut -d: -f1",shell=True,capture_output=True)
+# interface = subprocess.run("ifconfig | head -1 | cut -d: -f1",shell=True,capture_output=True)
 
-print(interface.stdout.decode().strip())
+# print(interface.stdout.decode().strip())
+allowedHost = "192.168.1.0"
+prefix = 24
+allowedHost = allowedHost.split(".")
+# print(prefix/8)
+allowedHost = allowedHost[0:int(prefix/8)]
 
-
-
-
-
-
-
-
+# print(allowedHost)
+lol = []
+with open("Config/samba/origin.conf","r") as file :
+  lol = file.readlines()
+position = test(lol,"")
+joined = ".".join(allowedHost)
+lol[position[0]] = f"{lol[position[0]].strip()} {joined}. \n "
+lol.append("HOOOOOOOOOOOOOOOOOOOOOO")
+print(lol)
 
 
 
