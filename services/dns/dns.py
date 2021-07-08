@@ -2,10 +2,11 @@ import re
 import subprocess
 class DNS():
   def __init__(self):
-     self.named_PATH = "Config/dns/named.conf"
-     self.direct_zone_PATH = "Config/dns/sen.netmobo.lab"
-     self.reverse_zone_PATH = "Config/dns/lab.netmobo.sen" 
+     self.named_PATH = "/etc/named.conf"
+     self.direct_zone_PATH = ""
+     self.reverse_zone_PATH = ""
      self.allowedNetworks = []
+     self.prefix = ""
      self.dns_server_ip = ""
      self.address_riversed =  ""
      self.domain_name = ""
@@ -16,7 +17,8 @@ class DNS():
      self.entryIP = ""
      self.entryType = "A"
      #self.init_configuration()
-     self.DELETE_ENTRY()
+     self.init_configuration()
+
   def getPosition(self,file,first,end=False) :
 
     #daba plan wmafih anaho ana tan9lb 3la wa7d l3iba tatbda bchi l3iba "first"
@@ -42,13 +44,14 @@ class DNS():
     self.domain_name = input("what is the domain name ? ")
     if init == True : 
       self.allowedNetworks.append(input("what network you want to allow ? "))
+      self.prefix = input("what is the prefix of your network ?")
       self.dns_server_ip = input("what is the ip address of the dns server ? ")
-      #self.domain_name = input("what is the domain name ? ")
       self.server_hostname = input("what the server hostname ? ")
       self.address_riversed = input("what the address reversed ? ")
+
+
       # self.allowedNetworks.append("10.0.0.0")
       # self.dns_server_ip = "10.0.0.15"
-      # self.domain_name = "sen.netmobo.lab"
       # self.server_hostname = "srv1"
       # self.address_riversed = "0.0.10"
       #some magic will happen and will do the initial configuration 
@@ -60,27 +63,29 @@ class DNS():
 
   def init_configuration(self) : 
         self.init_information(True)
-        with open(self.named_PATH,"r") as file : 
+        with open("Config/dns/named.conf","r") as file : 
           named = file.readlines()
-          position = self.getPosition(named,"acl","}")
-          named.insert(position[0]+1,f"{self.allowedNetworks[0]} ;\n")
-          position = self.getPosition(named,"listen-on port 53")
-          named[position[0]] = named[position[0]].strip() + self.dns_server_ip.strip() + "; };\n"
-          position = self.getPosition(named,"#DIRECT")
-          named[position[0]+1] = f'zone "{self.domain_name}" IN '+"{ \n"
-          named[position[0]+2] = named[position[0]+2].strip() + f"{self.NStype} ;\n"
-          named[position[0]+3] = named[position[0]+3].strip() + f"{self.domain_name} ;\n"
-          # self.cmd(f"touch /var/named/{self.domain_name}")
-          #REVERSE
-          position = self.getPosition(named,"#REVERSE")
 
-          named[position[0]+1] = f'zone "{self.address_riversed}.in-addr.arpa" IN '+"{ \n"
-          named[position[0]+2] = named[position[0]+2].strip() + f"{self.NStype} ;\n"
-          reversed_domain = self.domain_name.split(".")
-          reversed_domain = ".".join(reversed_domain[::-1])
-          named[position[0]+3] = named[position[0]+3].strip() + f"{reversed_domain} ;\n"
-          # self.cmd(f"touch /var/named/{self.domain_name}")
-        with open("Config/dns/named_copy.conf","w") as file :
+        position = self.getPosition(named,"acl","}")
+        named.insert(position[0]+1,f"{self.allowedNetworks[0]}/{self.prefix} ;\n")
+        position = self.getPosition(named,"listen-on port 53")
+        named[position[0]] = named[position[0]].strip() + self.dns_server_ip.strip() + "; };\n"
+        position = self.getPosition(named,"#DIRECT")
+        named[position[0]+1] = f'zone "{self.domain_name}" IN '+" { \n"
+        named[position[0]+2] = named[position[0]+2].strip() + f" {self.NStype} ;\n"
+        named[position[0]+3] = named[position[0]+3].strip() + f' "{self.domain_name}" ;\n'
+        self.cmd(f"touch /var/named/{self.domain_name}")
+
+        #REVERSE
+        position = self.getPosition(named,"#REVERSE")
+
+        named[position[0]+1] = f'zone "{self.address_riversed}.in-addr.arpa" IN '+"{ \n"
+        named[position[0]+2] = named[position[0]+2].strip() + f" {self.NStype} ;\n"
+        reversed_domain = self.domain_name.split(".")
+        reversed_domain = ".".join(reversed_domain[::-1])
+        named[position[0]+3] = named[position[0]+3].strip() + f' "{reversed_domain}" ;\n'
+        self.cmd(f"touch /var/named/{reversed_domain}")
+        with open(self.named_PATH,"w") as file :
           file.write("") 
           file.writelines(named)
 
@@ -107,6 +112,8 @@ class DNS():
         # header_inverse.insert(position[0],f"{last_octet[-1]}\tIN\tPTR\t{self.server_hostname}.{self.domain_name} \n")
         header_inverse[position[0]] = f"{last_octet[-1]}\tIN\tPTR\t\t{self.server_hostname}.{self.domain_name} \n"
 
+        self.direct_zone_PATH = f"/var/named/{self.domain_name}"
+        self.reverse_zone_PATH = f"/var/named/{reversed_domain}"
 
         
         with open(self.direct_zone_PATH,"w") as file :
@@ -117,8 +124,30 @@ class DNS():
           file.write("")
           file.writelines(header_inverse) 
 
+        with open("Config/dns/path","w") as file : 
+          file.write(f"{self.direct_zone_PATH} \n")
+          file.write(f"{self.reverse_zone_PATH}")
+
+        self.cmd(f"chown named:named {self.direct_zone_PATH}")
+        self.cmd(f"chown named:named {self.reverse_zone_PATH}")
+        interface = subprocess.run("ifconfig | head -1 | cut -d: -f1",shell=True,capture_output=True)
+        interface = interface.stdout.decode().strip()
+        # print(interface.stdout.decode().strip())
+        self.cmd(f"nmcli connection modify {interface} IPv4.address {self.dns_server_ip} ")
+        self.cmd(f"nmcli connection modify {interface} IPv4.dns {self.dns_server_ip} ")
+        self.cmd(f"nmcli connection modify {interface} IPv4.method manual ")
+        arrayed_ip = self.dns_server_ip.split(".")
+        arrayed_ip[-1] = "1"
+        arrayed_ip = ".".join(arrayed_ip)
+        self.cmd(f"nmcli connection modify {interface} IPv4.gateway {arrayed_ip}/{self.prefix}")
+        self.cmd(f"nmcli connection down {interface} ")
+        self.cmd(f"nmcli connection up {interface} ")
+
+
+
   def ADD_ENTRY(self) : 
     self.init_information()
+    self.get_path()
     with open(self.direct_zone_PATH,"r") as file :
       direct = file.readlines()
     
@@ -142,6 +171,7 @@ class DNS():
 
   def DELETE_ENTRY(self) : 
     self.entryName = input("what the entry name ? ")
+    self.get_path()
     with open(self.direct_zone_PATH,"r") as file :
       direct = file.readlines()
     
@@ -149,7 +179,7 @@ class DNS():
       inverse = file.readlines()
 
     direct_position = self.getPosition(direct,self.entryName)
-    
+
     if  re.search("CNAME",direct[direct_position[0]]) == None  :
 
       position = self.getPosition(inverse,self.entryName) 
@@ -166,10 +196,15 @@ class DNS():
       file.write("")
       file.writelines(inverse) 
 
+  def get_path(self) : 
+    with open("Config/dns/path","r") as file :
+      paths = file.readlines()
+    self.direct_zone_PATH = paths[0].strip()
+    self.reverse_zone_PATH = paths[1].strip()
+ 
   def cmd(self,command):
     subprocess.run(command,shell=True)
 
-x = DNS()
 
 
 

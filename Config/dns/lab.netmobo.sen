@@ -1,10 +1,10 @@
 $TTL 3H
-@	IN SOA srv1.sen.netmobo.lab. root.sen.netmobo.lab. ( 
+@	IN SOA srv1.dirto.hero.but. root.dirto.hero.but. ( 
 					0	; serial
 					1D		; refresh
 					1H		; retry
 					1W		; expire
 					3H 	)	; minimum
 
-@		IN	NS 	 srv1.sen.netmobo.lab. 
-15	IN	PTR		srv1.sen.netmobo.lab 
+@		IN	NS 	 srv1.dirto.hero.but. 
+15	IN	PTR		srv1.dirto.hero.but 
