@@ -20,7 +20,6 @@ class DNS():
      self.init_configuration()
 
   def getPosition(self,file,first,end=False) :
-
     #daba plan wmafih anaho ana tan9lb 3la wa7d l3iba tatbda bchi l3iba "first"
     # had l3iba tatkml bchi l3iba okhra tanprovidiha f "end", w brit index fin taykml 7ta howa 
     # tandiro return wa7d array fih index dyal lbdya wdyal nihaya
