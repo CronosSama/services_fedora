@@ -4,8 +4,16 @@ import re
 
 class DHCP():
 
-  def __init__(self,option) -> None:
-      self.inputs = []
+  def __init__(self,option,serverIP,prefix,networkAddress,NETID_OCTET,domain_name,gateway,broadcast,mask):
+      # self.inputs = []
+      self.mask = mask
+      self.serverIP =serverIP
+      self.prefix = prefix
+      self.networkAddress =networkAddress
+      self.NETID_OCTET =NETID_OCTET
+      self.domain_name = domain_name
+      self.gateway = gateway
+      self.broadcast = broadcast
       self.option = option
       self.how_much_ligne = 0
       self.configPATH = "/etc/dhcp/dhcpd.conf"
@@ -17,7 +25,10 @@ class DHCP():
     
     if re.search("ADD",self.option) != None :
       if self.option == "ADD_NETWORK" :
-        self.inputs = ["subnet","netmask","range","dns-server","domain-name","default-gateway","broadcast-address","default-lease-time","max-lease-time"]
+        rangedhcp = f'{".".join(self.NETID_OCTET)}.20 {".".join(self.NETID_OCTET)}.200'
+        # self.inputs = ["subnet","netmask","range","dns-server","domain-name","default-gateway","broadcast-address","default-lease-time","max-lease-time"]
+        self.inputs = [self.networkAddress,self.mask,rangedhcp,self.serverIP,f'"{self.domain_name}"',self.gateway,self.broadcast,"777","7777"]
+
         self.PATH = "./Config/dhcp/add.txt"
 
       
@@ -47,8 +58,8 @@ class DHCP():
       
       #just tanjm3 les valeur li hanzid
       for inp in self.inputs :
-        new = input(f"the value of {inp} : ")
-        conf.append(new)
+        conf.append(inp)
+
       origin = []
 
       with open(self.PATH,"r") as file :

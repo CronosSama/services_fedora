@@ -2,13 +2,13 @@ import re
 import subprocess
 
 class SSH():
-  def __init__(self):
+  def __init__(self,server_address,ssh_allowed_groups,sftp_allowed_groups):
     self.sshPATH = "/etc/ssh/sshd_config"
 
-    self.port = ""
-    self.server_address = ""
-    self.ssh_allowed_groups = ""
-    self.sftp_allowed_groups = ""
+    self.port = "2017"
+    self.server_address = server_address
+    self.ssh_allowed_groups = ssh_allowed_groups
+    self.sftp_allowed_groups = sftp_allowed_groups
     self.init_configuration()
 
   
@@ -23,7 +23,7 @@ class SSH():
     # self.sftp_allowed_groups = "sftponly"
 
   def init_configuration(self) :
-    self.information()
+    # self.information()
     with open("Config/ssh/sshd_config","r") as file : 
       origin = file.readlines()
     #port
@@ -57,7 +57,6 @@ class SSH():
       file.write("")
       file.writelines(origin) 
 
-d = SSH()
 
 
 

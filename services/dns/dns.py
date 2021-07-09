@@ -1,24 +1,28 @@
 import re
 import subprocess
 class DNS():
-  def __init__(self):
+  def __init__(self,serverIP,prefix,networkAddress,reversed_,domain_name,hostname):
+
      self.named_PATH = "/etc/named.conf"
      self.direct_zone_PATH = ""
      self.reverse_zone_PATH = ""
-     self.allowedNetworks = []
-     self.prefix = ""
-     self.dns_server_ip = ""
-     self.address_riversed =  ""
-     self.domain_name = ""
-     self.server_hostname = ""
+     self.allowedNetworks = [networkAddress]
+     self.prefix = prefix
+     self.dns_server_ip = serverIP
+     self.address_riversed =  reversed_
+     self.domain_name = domain_name
+     self.server_hostname = hostname
      self.NStype = "master"
      #for adding entry to the zone files
-     self.entryName = ""
-     self.entryIP = ""
+     self.entryName = "web"
+     self.entryIP = self.dns_server_ip
      self.entryType = "A"
      #self.init_configuration()
      self.init_configuration()
-
+     self.ADD_ENTRY()
+     self.entryName = "www"
+     self.entryType = "CNAME"
+     self.ADD_ENTRY()
   def getPosition(self,file,first,end=False) :
     #daba plan wmafih anaho ana tan9lb 3la wa7d l3iba tatbda bchi l3iba "first"
     # had l3iba tatkml bchi l3iba okhra tanprovidiha f "end", w brit index fin taykml 7ta howa 
@@ -61,7 +65,7 @@ class DNS():
 
 
   def init_configuration(self) : 
-        self.init_information(True)
+        # self.init_information(True)
         with open("Config/dns/named.conf","r") as file : 
           named = file.readlines()
         #ADD ACE
@@ -102,17 +106,14 @@ class DNS():
           header_inverse =  file.readlines()
         
         position = self.getPosition(header_direct,"SOA")
-        print(position)
         header_direct[position[0]] = f"{header_direct[position[0]].strip()} {self.server_hostname}.{self.domain_name}. root.{self.domain_name}. ( \n" 
         header_inverse[position[0]] = f"{header_inverse[position[0]].strip()} {self.server_hostname}.{self.domain_name}. root.{self.domain_name}. ( \n" 
 
         position = self.getPosition(header_direct,"NS")
-        print(position)
         header_direct[position[0]] = f"{header_direct[position[0]].strip()} \t {self.server_hostname}.{self.domain_name}. \n"
         header_inverse[position[0]] = f"{header_inverse[position[0]].strip()} \t {self.server_hostname}.{self.domain_name}. \n"
 
         position = self.getPosition(header_direct,"IN  A")
-        print(position)
         header_direct[position[0]] = f"{header_direct[position[0]].strip()} \t {self.dns_server_ip} \n"
         header_direct.insert(position[0]+1,f"{self.server_hostname}\tIN\tA\t{self.dns_server_ip} \n")
         last_octet = self.dns_server_ip.split(".")
@@ -137,23 +138,12 @@ class DNS():
 
         self.cmd(f"chown named:named {self.direct_zone_PATH}")
         self.cmd(f"chown named:named {self.reverse_zone_PATH}")
-        interface = subprocess.run("ifconfig | head -1 | cut -d: -f1",shell=True,capture_output=True)
-        interface = interface.stdout.decode().strip()
-        # print(interface.stdout.decode().strip())
-        self.cmd(f"nmcli connection modify {interface} IPv4.address {self.dns_server_ip}/{self.prefix} ")
-        self.cmd(f"nmcli connection modify {interface} IPv4.dns {self.dns_server_ip} ")
-        self.cmd(f"nmcli connection modify {interface} IPv4.method manual ")
-        arrayed_ip = self.dns_server_ip.split(".")
-        arrayed_ip[-1] = "1"
-        arrayed_ip = ".".join(arrayed_ip)
-        self.cmd(f"nmcli connection modify {interface} IPv4.gateway {arrayed_ip}")
-        self.cmd(f"nmcli connection down {interface} ")
-        self.cmd(f"nmcli connection up {interface} ")
+
 
 
 
   def ADD_ENTRY(self) : 
-    self.init_information()
+    # self.init_information()
     self.get_path()
     with open(self.direct_zone_PATH,"r") as file :
       direct = file.readlines()

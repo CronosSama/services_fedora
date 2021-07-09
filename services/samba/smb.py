@@ -2,23 +2,26 @@ import re
 import subprocess
 
 class SMB():
-  def __init__(self):
+  def __init__(self,admin,allowedHost,prefix,groupArray):
       self.smbPATH = "/etc/samba/smb.conf"
       # self.smbPATH = "Config/samba/smb.conf"
 
       self.folderName = ""
-      self.theAdmin = ""
+      self.theAdmin = admin
       self.validUsers = []
-      self.directoryMask = ""
-      self.createMask = ""
-      self.writable = ""
+      self.directoryMask = "774"
+      self.createMask = "664"
+      self.writable = "yes"
       self.path = ""
-      self.allowedHost = ""
-      self.prefix = 24
+      self.allowedHost = allowedHost
+      self.prefix = prefix
       self.init_configuration()
-      self.ADD_ENTRY()
-      self.init_interface()
-      self.cmd("service smb restart")
+      for group in groupArray : 
+        self.folderName = group
+        self.path = f"/share/{group}"
+        self.cmd(f"mkdir -p {self.path} ;chown -R {self.theAdmin}:{self.theAdmin} {self.path}")
+        self.validUsers = f"@{group}"
+        self.ADD_ENTRY()
 
   def infromation(self,init=False) : 
     if init == False :
@@ -39,7 +42,7 @@ class SMB():
       # self.writable = "yes"
 
       self.path = f"/share/{self.folderName}"
-      self.cmd(f"mkdir /share/{self.folderName} ;chown -R {self.theAdmin}:{self.theAdmin} /share/{self.folderName}")
+      self.cmd(f"mkdir -p /share/{self.folderName} ;chown -R {self.theAdmin}:{self.theAdmin} /share/{self.folderName}")
 
     else : 
       self.allowedHost = input("what is the network address ?")
@@ -51,12 +54,12 @@ class SMB():
 
 
   def init_configuration(self) : 
-    self.infromation(True)
     lol = []
     with open("Config/samba/origin.conf","r") as file :
       lol = file.readlines()
     position = self.getPosition(lol,"hosts allow = ")
-    joined = ".".join(self.allowedHost)
+    # joined = ".".join(self.allowedHost)
+    joined = self.allowedHost
     lol[position[0]] = f"\t{lol[position[0]].strip()} {joined}. \n "
 
     with open(self.smbPATH,"w") as file : 
@@ -64,8 +67,8 @@ class SMB():
       file.writelines(lol)
 
   def ADD_ENTRY(self) : 
-    self.infromation()
-    
+    # self.infromation()
+
     with open(self.smbPATH,"r") as file :
       origin = file.readlines()
     origin.append(f"[{self.folderName}] \n")
@@ -78,22 +81,6 @@ class SMB():
     with open(self.smbPATH,"w") as file :
       file.write("")
       file.writelines(origin)   
-
-
-
-  def init_interface(self):
-    interface = subprocess.run("ifconfig | head -1 | cut -d: -f1",shell=True,capture_output=True)
-    interface = interface.stdout.decode().strip()
-    # print(interface.stdout.decode().strip())
-    self.cmd(f"nmcli connection modify {interface} IPv4.address {self.serverIP}/{self.prefix} ")
-    self.cmd(f"nmcli connection modify {interface} IPv4.dns {self.serverIP} ")
-    self.cmd(f"nmcli connection modify {interface} IPv4.method manual ")
-    arrayed_ip = self.serverIP.split(".")
-    arrayed_ip[-1] = "1"
-    arrayed_ip = ".".join(arrayed_ip)
-    self.cmd(f"nmcli connection modify {interface} IPv4.gateway {arrayed_ip}")
-    self.cmd(f"nmcli connection down {interface} ")
-    self.cmd(f"nmcli connection up {interface} ")
 
 
 
@@ -123,8 +110,6 @@ class SMB():
 
 
 
-
-x = SMB()
 
 
 
