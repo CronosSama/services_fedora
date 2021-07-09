@@ -20,6 +20,7 @@ class DNS():
      #self.init_configuration()
      self.init_configuration()
      self.ADD_ENTRY()
+     self.entryIP = "web"
      self.entryName = "www"
      self.entryType = "CNAME"
      self.ADD_ENTRY()
