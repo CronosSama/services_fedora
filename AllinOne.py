@@ -18,7 +18,7 @@ class ALL():
     self.domain_name = ""
     self.reversed = ""
     self.admin = ""
-
+    self.interfaceName = ""
     self.install()
     print("GATHEEERING INFORMATION TIME : \n")
     self.information()
@@ -42,12 +42,12 @@ class ALL():
   def interface(self):
     interface = subprocess.run("ifconfig | head -1 | cut -d: -f1",shell=True,capture_output=True)
     interface = interface.stdout.decode().strip()
-    self.cmd(f"nmcli connection modify {interface} IPv4.address {self.serverIP}/{self.prefix} ")
-    self.cmd(f"nmcli connection modify {interface} IPv4.dns {self.serverIP} ")
-    self.cmd(f"nmcli connection modify {interface} IPv4.method manual ")
-    self.cmd(f"nmcli connection modify {interface} IPv4.gateway {self.gateway}")
-    self.cmd(f"nmcli connection down {interface} ")
-    self.cmd(f"nmcli connection up {interface} ")
+    self.cmd(f"nmcli connection modify {self.interfaceName} IPv4.address {self.serverIP}/{self.prefix} ")
+    self.cmd(f"nmcli connection modify {self.interfaceName} IPv4.dns {self.serverIP} ")
+    self.cmd(f"nmcli connection modify {self.interfaceName} IPv4.method manual ")
+    self.cmd(f"nmcli connection modify {self.interfaceName} IPv4.gateway {self.gateway}")
+    self.cmd(f"nmcli connection down {self.interfaceName} ")
+    self.cmd(f"nmcli connection up {self.interfaceName} ")
 
   def information(self):
     self.serverIP = input("server ip :  ")
@@ -55,6 +55,7 @@ class ALL():
     self.domain_name = input("domain-name : ")
     self.hostname = input("server hostname : ")
     self.admin = input("admin name : ")
+    self.interfaceName = input("Interface name :")
     self.group = input("the Name of groups (seperate each group with,) : ")
     arrayed_ip = self.serverIP.split(".")
     self.NETID_OCTET = arrayed_ip[0:3]
@@ -100,7 +101,7 @@ class ALL():
     for firew in firews : 
       self.cmd(f"firewall-cmd --add-service={firew} --permanent")
 
-
+    self.cmd("firewall-cmd --add-port=2017/tcp --permanent ")
     self.cmd("firewall-cmd --reload")
 
 

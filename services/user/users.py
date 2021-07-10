@@ -53,7 +53,8 @@ class USSER():
           # option e for echo can interept \n not write it
           self.cmd(f'echo -e "{password}\n{password}" | passwd {username} ')
           self.cmd(f'echo -e "{password}\n{password}" | smbpasswd -as {username} ')
-          self.cmd(f"./ip.sh {username} {password} {group}")
+          self.cmd(f'mkdir /share/{group}/{username} ; chmod 707 /share/{group}/{username} ;chown {username}:{group} /share/{group}/{username} ')
+          # self.cmd(f"./ip.sh {username} {password} {group}")
           file.write(full_user+"\n")
           print(f"user {username} has been added SUCCESSFULLY !!!")
           i += 1
