@@ -49,7 +49,7 @@ class USSER():
           username = f"{group}-Poste{i}"
           full_user = f"{username}:{password}:{group}"
           self.cmd(f"useradd -m -g {group} {username}")
-          self.cmd(f"echo {username}:{password} | chpasswd ")
+          # self.cmd(f"echo {username}:{password} | chpasswd ")
           # option e for echo can interept \n not write it
           self.cmd(f'echo -e "{password}\n{password}" | passwd {username} ')
           self.cmd(f'echo -e "{password}\n{password}" | smbpasswd -as {username} ')

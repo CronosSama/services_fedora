@@ -115,21 +115,24 @@ def test(file,first,end=False) :
 # interface = subprocess.run("ifconfig | head -1 | cut -d: -f1",shell=True,capture_output=True)
 
 # print(interface.stdout.decode().strip())
-allowedHost = "192.168.1.0"
-prefix = 24
-allowedHost = allowedHost.split(".")
-# print(prefix/8)
-allowedHost = allowedHost[0:int(prefix/8)]
+# allowedHost = "192.168.1.0"
+# prefix = 24
+# allowedHost = allowedHost.split(".")
+# # print(prefix/8)
+# allowedHost = allowedHost[0:int(prefix/8)]
 
-# print(allowedHost)
-lol = []
-with open("Config/samba/origin.conf","r") as file :
-  lol = file.readlines()
-position = test(lol,"")
-joined = ".".join(allowedHost)
-lol[position[0]] = f"{lol[position[0]].strip()} {joined}. \n "
-lol.append("HOOOOOOOOOOOOOOOOOOOOOO")
-print(lol)
+# # print(allowedHost)
+# lol = []
+# with open("Config/samba/origin.conf","r") as file :
+#   lol = file.readlines()
+# position = test(lol,"")
+# joined = ".".join(allowedHost)
+# lol[position[0]] = f"{lol[position[0]].strip()} {joined}. \n "
+# lol.append("HOOOOOOOOOOOOOOOOOOOOOO")
+# print(lol)
 
+with open("Config/mail/main.cf","r") as file : 
+      file_array = file.readlines()
 
+print(file_array)
 

@@ -1,3 +1,4 @@
+from services.mail.mail import Mail
 from configurer import CONFIGURER
 from services.ssh.ssh import SSH
 from services.samba.smb import SMB
@@ -19,20 +20,26 @@ class ALL():
     self.reversed = ""
     self.admin = ""
     self.interfaceName = ""
+    # self.services = ["vsftpd","dhcpd","named","smb","sshd","httpd"]
+    # self.firservices = ["http","ftp","http","dhcp","samba"]
+    self.installs = ["dovecot","postfix"]
+    self.services = ["postfix","dovecot"]
+    self.firservices = ["smtp","{pop3,imap}"]
     self.install()
-    print("GATHEEERING INFORMATION TIME : \n")
+    # print("GATHEEERING INFORMATION TIME : \n")
     self.information()
-    print("CONFIGURENNING INTERFACE TIME : \n")
-    self.interface()
-    print("DHCCCCCCCCCCCCCCCCCP TIME : \n")
-    self.dhcpd()
-    self.dns()
-    print("SMMMMMMMMMMMMMMMMMMMMMMMMMMMMMB \n")
-    self.smb()
-    print("SSSSSSSSSSSSSSSSSHHHHHHHHHHHD \n")
-    self.sshd()
-    print("FTTTTTTTPPPPPPPPP \n")
-    self.ftp()
+    Mail(self.domain_name,self.hostname,self.networkAddress,self.prefix)
+    # print("CONFIGURENNING INTERFACE TIME : \n")
+    # self.interface()
+    # print("DHCCCCCCCCCCCCCCCCCP TIME : \n")
+    # self.dhcpd()
+    # self.dns()
+    # print("SMMMMMMMMMMMMMMMMMMMMMMMMMMMMMB \n")
+    # self.smb()
+    # print("SSSSSSSSSSSSSSSSSHHHHHHHHHHHD \n")
+    # self.sshd()
+    # print("FTTTTTTTPPPPPPPPP \n")
+    # self.ftp()
     # print("SELINUX RIP TIME ::::: \n")
     # self.selinux()
 
@@ -54,9 +61,9 @@ class ALL():
     self.prefix = int(input("prefix length : "))
     self.domain_name = input("domain-name : ")
     self.hostname = input("server hostname : ")
-    self.admin = input("admin name : ")
-    self.interfaceName = input("Interface name :")
-    self.group = input("the Name of groups (seperate each group with,) : ")
+    #self.admin = input("admin name : ")
+    #self.interfaceName = input("Interface name :")
+    #self.group = input("the Name of groups (seperate each group with,) : ")
     arrayed_ip = self.serverIP.split(".")
     self.NETID_OCTET = arrayed_ip[0:3]
     for _ in self.NETID_OCTET :
@@ -92,22 +99,22 @@ class ALL():
 
   def finish(self):
 
-    services = ["vsftpd","dhcpd","named","smb","sshd","httpd"]
+    # self.services = ["vsftpd","dhcpd","named","smb","sshd","httpd"]
 
-    for service in services :
+    for service in self.services :
       self.cmd(f"systemctl enable --now {service}")
     
-    firews = ["http","ftp","http","dhcp","samba"]
-    for firew in firews : 
+    # self.firservices = ["http","ftp","http","dhcp","samba"]
+    for firew in self.firservices : 
       self.cmd(f"firewall-cmd --add-service={firew} --permanent")
 
-    self.cmd("firewall-cmd --add-port=2017/tcp --permanent ")
+    # self.cmd("firewall-cmd --add-port=2017/tcp --permanent ")
     self.cmd("firewall-cmd --reload")
 
 
   def install(self):
-    installs = ["bind bind-utils","httpd","dhcp-server","samba","vsftpd"]
-    for install in installs : 
+    # self.installs = ["bind bind-utils","httpd","dhcp-server","samba","vsftpd"]
+    for install in self.installs : 
       self.cmd(f"dnf -y install {install} ")
 
 
@@ -116,7 +123,7 @@ class ALL():
       dfile = file.readlines()
 
     dfile[21]="SELINUX=disabled"
-    with open("/etc/selinux/config","r") as file : 
+    with open("/etc/selinux/config","w") as file : 
       file.write("")
       file.writelines(dfile)
 
